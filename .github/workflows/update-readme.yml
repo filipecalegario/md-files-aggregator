@@ -1,0 +1,22 @@
+name: Atualizar README
+
+# Aciona o workflow em cada push para o repositório
+on: push
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # Garante que todos os branches e tags sejam baixados
+    - name: Configurar Git
+      run: |
+        git config user.name "Filipe Calegario"
+        git config user.email "fcac@cin.ufpe.br"
+    - name: Configurar Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Atualizar README
+      run: python ./update_readme.py
