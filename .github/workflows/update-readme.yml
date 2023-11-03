@@ -1,7 +1,13 @@
 name: Atualizar README
 
 # Aciona o workflow em cada push para o repositório
-on: push
+on:
+    push:
+      paths:
+        - '**.md'
+        - '!README.md'
+      branches:
+        - main
 
 jobs:
   update-readme:
