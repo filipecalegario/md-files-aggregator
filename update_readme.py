@@ -1,6 +1,6 @@
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 import subprocess
 
 # Caminho para o README
@@ -24,7 +24,11 @@ for root, dirs, files in os.walk("."):
                 universal_newlines=True
             ).strip()
             datetime_object_commit = datetime.strptime(last_commit_date, '%a %b %d %H:%M:%S %Y %z')
-            datetime_object_mod = os.path.getmtime(file_path)
+            datetime_object_commit = datetime_object_commit.astimezone(timezone.utc)
+            timestamp_mod = os.path.getmtime(file_path)
+            datetime_object_mod = datetime.fromtimestamp(timestamp_mod, timezone.utc)
+            # Tornar o datetime_object_mod offset-aware adicionando o fuso horário UTC
+            # datetime_object_mod = datetime_object_mod.replace(tzinfo=timezone.utc)
             datetime_object = max(datetime_object_commit, datetime_object_mod)
             with open(file_path, 'r', encoding='utf-8') as f:
                 # Extrair o primeiro título de cada arquivo
@@ -38,7 +42,7 @@ articles.sort(key=lambda x: x[1], reverse=True)
 
 # Adicionar títulos ordenados ao README
 for title, _, file_path in articles:
-    print(title)
+    print(f'- {title}')
     relative_path = os.path.relpath(file_path)
     readme_content += f"- [{title}]({relative_path})\n"
 
